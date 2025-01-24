@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart'; // Ensure Supabase is imported
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AddSessionPage extends StatefulWidget {
   const AddSessionPage({super.key});
@@ -9,14 +9,14 @@ class AddSessionPage extends StatefulWidget {
 }
 
 class _AddSessionPageState extends State<AddSessionPage> {
-  // Controllers for form fields
   final TextEditingController _disciplineController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _distanceController = TextEditingController();
   final TextEditingController _durationController = TextEditingController();
   final TextEditingController _sensationsController = TextEditingController();
 
-  // Function to add session to Supabase
+  String? _errorMessage; // To store the error message
+
   Future<void> addSession() async {
     final discipline = _disciplineController.text;
     final distance = double.tryParse(_distanceController.text);
@@ -24,47 +24,44 @@ class _AddSessionPageState extends State<AddSessionPage> {
     final date = DateTime.tryParse(_dateController.text);
     final sensation = int.tryParse(_sensationsController.text);
 
-    if (date == null) {
-      throw Exception('Invalid date format');
-    }
+    setState(() {
+      _errorMessage = null; // Reset error message
+    });
 
-    final formattedDate = date.toIso8601String();
-    if (discipline.isEmpty || distance == null || duration == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all fields correctly')),
-      );
+    if (discipline.isEmpty ||
+        distance == null ||
+        duration == null ||
+        date == null) {
+      setState(() {
+        _errorMessage = 'Please fill all fields correctly.';
+      });
       return;
     }
 
+    final formattedDate = date.toIso8601String();
+
     try {
-      // Insert data into Supabase
       final response = await Supabase.instance.client.from('sessions').insert({
         'discipline': discipline,
         'distance': distance,
         'duration': duration,
         'date': formattedDate,
         'sensations': sensation,
-      }).select(); // Ensures you get the inserted data
+      }).select();
 
-      // Check if data was successfully inserted
       if (response.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No data returned from Supabase')),
-        );
+        setState(() {
+          _errorMessage = 'No data returned from Supabase.';
+        });
         return;
       }
 
       print('Inserted data: $response');
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Session added successfully!')),
-      );
-
-      Navigator.pop(context); // Navigate back
+      Navigator.pop(context); // Navigate back on success
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
+      setState(() {
+        _errorMessage = 'Error: $e';
+      });
       print('Exception: $e');
     }
   }
@@ -80,7 +77,6 @@ class _AddSessionPageState extends State<AddSessionPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Discipline input
             TextField(
               controller: _disciplineController,
               decoration: const InputDecoration(
@@ -88,7 +84,6 @@ class _AddSessionPageState extends State<AddSessionPage> {
               ),
             ),
             const SizedBox(height: 8),
-            // Date input
             TextField(
               controller: _dateController,
               decoration: const InputDecoration(
@@ -96,7 +91,6 @@ class _AddSessionPageState extends State<AddSessionPage> {
               ),
             ),
             const SizedBox(height: 8),
-            // Distance input
             TextField(
               controller: _distanceController,
               decoration: const InputDecoration(
@@ -105,7 +99,6 @@ class _AddSessionPageState extends State<AddSessionPage> {
               keyboardType: TextInputType.numberWithOptions(decimal: true),
             ),
             const SizedBox(height: 8),
-            // Duration input
             TextField(
               controller: _durationController,
               decoration: const InputDecoration(
@@ -114,7 +107,6 @@ class _AddSessionPageState extends State<AddSessionPage> {
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 8),
-            // Sensations input
             TextField(
               controller: _sensationsController,
               decoration: const InputDecoration(
@@ -122,11 +114,17 @@ class _AddSessionPageState extends State<AddSessionPage> {
               ),
             ),
             const SizedBox(height: 16),
-            // Submit button
             ElevatedButton(
               onPressed: addSession,
               child: const Text('Add Session'),
             ),
+            const SizedBox(height: 16),
+            // Display error message if present
+            if (_errorMessage != null)
+              Text(
+                _errorMessage!,
+                style: const TextStyle(color: Colors.red),
+              ),
           ],
         ),
       ),
