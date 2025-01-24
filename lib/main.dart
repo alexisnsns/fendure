@@ -3,6 +3,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'keys.dart';
 import 'classes.dart';
 import 'pages/sessionDetails.dart';
+import 'pages/addSession.dart';
+import 'pages/analytics.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,7 +45,73 @@ class _HomePageState extends State<HomePage> {
       // appBar is a header that appears at the top of the screen
       appBar: AppBar(
         title: const Text('Sessions'),
+        centerTitle: true, // Center the title
+        actions: [
+          // Add Session button
+          Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddSessionPage(),
+                  ),
+                );
+              },
+              child: Container(
+                width: 150, // Adjust width for larger button
+                height: 50, // Adjust height for larger button
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Colors.blue, // Button color
+                  borderRadius: BorderRadius.circular(8), // Rounded corners
+                ),
+                child: const Text(
+                  'Add Session',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18, // Larger text
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // Analytics button
+          Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AnalyticsPage(),
+                  ),
+                );
+              },
+              child: Container(
+                width: 150, // Adjust width for larger button
+                height: 50, // Adjust height for larger button
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Colors.green, // Button color
+                  borderRadius: BorderRadius.circular(8), // Rounded corners
+                ),
+                child: const Text(
+                  'Analytics',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18, // Larger text
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
+
       // body is the main content of the screen
       body: FutureBuilder(
         future: _future,
