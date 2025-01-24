@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'keys.dart';
 import 'classes.dart';
+import 'pages/sessionDetails.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,15 +35,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // Create a future to fetch data from 'sessions' table
   final _future = Supabase.instance.client.from('sessions').select();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // appBar is a header that appears at the top of the screen
       appBar: AppBar(
         title: const Text('Sessions'),
       ),
+      // body is the main content of the screen
       body: FutureBuilder(
         future: _future,
         builder: (context, snapshot) {
@@ -77,6 +79,16 @@ class _HomePageState extends State<HomePage> {
                 subtitle: Text(
                     'Distance: ${session.distance} km | Duration: ${session.duration} min'),
                 trailing: Text('Sensations: ${session.sensations}'),
+                onTap: () {
+                  // Navigate to the details page on tap
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          SessionDetailsPage(session: session),
+                    ),
+                  );
+                },
               );
             },
           );
