@@ -127,7 +127,7 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(right: 20.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -135,6 +135,7 @@ class _HomePageState extends State<HomePage> {
                   'Sort by:',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
+                const SizedBox(width: 12.0),
                 DropdownButton<String>(
                   value: _sortCriteria,
                   items: const [
