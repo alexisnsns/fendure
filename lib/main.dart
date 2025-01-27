@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'keys.dart';
 import 'classes.dart';
 import 'pages/sessionDetails.dart';
 import 'pages/addSession.dart';
 import 'pages/analytics.dart';
+
+final SUPABASE_URL = 'https://ngpyuipgwclmsuiiafqo.supabase.co';
+final SUPABASE_KEY =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ncHl1aXBnd2NsbXN1aWlhZnFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI4MzEyNjEsImV4cCI6MjA0ODQwNzI2MX0.C4H-1uV_tWwK_9owS6HPPqX9iGJckSxBkqlYNKkLJf8';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
